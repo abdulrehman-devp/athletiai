@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Target, Zap } from "lucide-react";
 import Image from "next/image";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function Hero() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -122,13 +124,27 @@ export default function Hero() {
                   : "opacity-0 translate-y-4"
               }`}
             >
+              {" "}
+              {/* <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <Button
+                  size="lg"
+                  className="bg-black text-white hover:bg-black/90 hover:-translate-y-1 transition-all duration-300"
+                >
+                  <SignedIn>Go to Dashboard</SignedIn>
+                  <SignedOut>Get Started</SignedOut>
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div> */}
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
                 {" "}
                 <Button
                   size="lg"
                   className="bg-black hover:bg-green-900 text-white px-10 py-6 text-lg font-medium rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105 font-montserrat"
                 >
-                  Get Started
+                  <SignedIn>
+                    <a href="/dashboard">Go to Dashboard</a>
+                  </SignedIn>
+                  <SignedOut>Get Started</SignedOut>
                   <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform duration-300" />
                 </Button>
                 <Button
