@@ -1,34 +1,26 @@
-import { Geist } from "next/font/google";
-import { Space_Grotesk, Outfit } from "next/font/google";
+import "@fontsource/playfair-display/400.css";
+import "@fontsource/playfair-display/500.css";
+import "@fontsource/playfair-display/600.css";
+import "@fontsource/playfair-display/700.css";
+import "@fontsource/playfair-display/800.css";
+import "@fontsource/montserrat/300.css";
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/600.css";
+import "@fontsource/montserrat/700.css";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-});
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
-
 export const metadata = {
-  title: "Athleti AI - Use AI to do you workouts",
-  description: "by Athleti AI",
+  title: "Athletic AI - AI-Powered Fitness Platform",
+  description:
+    "Transform your fitness journey with AI-powered personalized training",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geist.variable} ${spaceGrotesk.variable} ${outfit.variable}`}
-      >
+      <body>
         <Navbar />
         {children}
       </body>

@@ -1,236 +1,231 @@
 "use client";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Play, Target, Zap } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
-import { useRef, useEffect } from "react";
-
-const GetStartedButton = () => (
-  <span className="flex items-center gap-1.5">
-    Get Started
-    <svg
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-    >
-      <path
-        clipRule="evenodd"
-        fillRule="evenodd"
-        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
-      />
-    </svg>
-  </span>
-);
-
-// Background circle component
-const GradientCircle = ({ size, color, className }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 1.5 }}
-    className={`absolute rounded-full blur-xl ${className}`}
-    style={{
-      width: size,
-      height: size,
-      background: `radial-gradient(circle at center, ${color} 0%, ${color}55 40%, transparent 70%)`,
-    }}
-  />
-);
 
 export default function Hero() {
-  const targetRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Mouse parallax setup
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Smooth spring animations for mouse movement
-  const rotateXSpring = useSpring(0, { stiffness: 100, damping: 30 });
-  const rotateYSpring = useSpring(0, { stiffness: 100, damping: 30 });
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    setIsLoaded(true);
+
     const handleMouseMove = (e) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-
-      // Convert mouse position to rotation values
-      const rotateX = ((clientY - innerHeight / 2) / innerHeight) * 10;
-      const rotateY = ((clientX - innerWidth / 2) / innerWidth) * 10;
-
-      rotateXSpring.set(rotateX);
-      rotateYSpring.set(-rotateY);
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [rotateXSpring, rotateYSpring]);
-
-  // Transform values for the image container
-  const scrollRotateX = useTransform(scrollYProgress, [0, 0.5], [25, 0]);
-  const scrollTranslateZ = useTransform(scrollYProgress, [0, 0.5], [-100, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0.6, 1]);
+  }, []);
+  const stats = [
+    {
+      label: "Calories Burned",
+      value: "2,847",
+      color: "from-green-500 to-green-400",
+      icon: "🔥",
+    },
+    {
+      label: "Steps Today",
+      value: "12,450",
+      color: "from-green-600 to-green-500",
+      icon: "👟",
+    },
+    {
+      label: "Active Minutes",
+      value: "87",
+      color: "from-green-400 to-green-300",
+      icon: "⏱️",
+    },
+    {
+      label: "Heart Rate",
+      value: "72",
+      color: "from-green-700 to-green-600",
+      icon: "❤️",
+    },
+  ];
 
   return (
-    <div className="relative min-h-screen bg-[#fafafa] overflow-hidden">
-      {/* Background gradient circles */}
-      <GradientCircle
-        size="200px"
-        color="rgba(168,85,247)"
-        className="top-20 right-[20%]"
-      />
-      <GradientCircle
-        size="160px"
-        color="rgba(59,130,246,0.2)"
-        className="top-40 left-[15%]"
-      />
-      <GradientCircle
-        size="240px"
-        color="rgba(168,85,247,0.15)"
-        className="bottom-40 right-[30%]"
-      />
-      <GradientCircle
-        size="180px"
-        color="rgba(59,130,246,0.25)"
-        className="bottom-20 left-[25%]"
-      />
-      <GradientCircle
-        size="220px"
-        color="rgba(168,85,247,0.2)"
-        className="top-[45%] left-[10%]"
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50/40 to-gray-50/30 overflow-hidden relative">
+      {/* Animated background elements */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(34, 197, 94, 0.05) 0%, transparent 50%)`,
+        }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        <div className="text-center max-w-4xl mx-auto space-y-8">
-          <motion.div className="space-y-8">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-block"
+      {/* Floating geometric shapes */}
+      <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-gray-200/30 to-green-100/20 rounded-full blur-2xl animate-pulse"></div>
+      <div className="absolute bottom-32 right-32 w-48 h-48 bg-gradient-to-br from-gray-200/30 to-green-100/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+      {/* Main Content */}
+      <main className="relative z-10 px-6">
+        <div className="container mx-auto">
+          {/* Hero Section */}
+          <div className="text-center pt-16 pb-20">
+            {/* Animated Badge */}
+            <div
+              className={`transition-all duration-1000 ${
+                isLoaded
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
             >
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-black/5 text-sm font-medium text-black/70">
-                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                AI-Powered Fitness Platform
-              </span>
-            </motion.div>
-
-            {/* Header without floating animation */}
-            <h1 className="font-space-grotesk text-5xl md:text-6xl lg:text-7xl font-bold text-black tracking-tight">
-              <div className="mb-2 flex flex-wrap justify-center gap-x-3">
-                Transform Your Fitness with
+              <div className="inline-flex items-center bg-gray-100 border border-gray-200 text-gray-700 px-6 py-2 rounded-full text-sm font-medium font-montserrat -mb-6 hover:shadow-sm transition-all duration-300 group relative -top-10">
+                <Zap className="w-4 h-4 mr-2 text-green-500 group-hover:animate-pulse" />
+                <span>AI-Powered Fitness Revolution</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
               </div>
-              <div className="relative inline-block mt-2">
-                <span className="bg-gradient-to-r from-purple-600 via-fuchsia-500 to-blue-600 text-transparent bg-clip-text">
-                  Intelligent AI
+            </div>
+
+            {/* Animated Headline */}
+            <div
+              className={`transition-all duration-1200 delay-200 ${
+                isLoaded
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-6"
+              }`}
+            >
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight max-w-6xl mx-auto mb-8">
+                <span className="block text-gray-900 font-light tracking-tight font-playfair">
+                  Transform your
                 </span>
-                <motion.div
-                  className="absolute -bottom-2 left-0 h-1.5 via-fuchsia-500 bg-black  w-full rounded-full"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                />
-              </div>
-            </h1>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-black via-gray-800 to-black font-bold tracking-tight animate-gradient font-playfair">
+                  Fitness Journey
+                </span>
+              </h1>
+            </div>
 
-            <p className="font-outfit text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience the future of fitness with personalized AI coaching.
-            </p>
-
-            {/* Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+            {/* Animated Subtitle */}
+            <div
+              className={`transition-all duration-1000 delay-400 ${
+                isLoaded
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
             >
-              <Link
-                href="/signup"
-                className="relative transition-all duration-300 shadow-md py-1.5 px-4 bg-black rounded-full inline-flex items-center justify-center gap-1.5 text-white text-sm font-semibold border-[2px] border-white hover:scale-105 hover:bg-white hover:text-black group overflow-hidden"
-              >
-                <GetStartedButton />
-              </Link>
-            </motion.div>
-          </motion.div>
+              <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed font-light font-montserrat">
+                Experience intelligent progress tracking and AI-driven insights
+                that adapt to your unique fitness goals.
+              </p>
+            </div>
 
-          {/* Dashboard Preview with enhanced 3D tilt effect and mouse parallax */}
-          <motion.div
-            ref={targetRef}
-            style={{
-              rotateX: scrollRotateX,
-              translateZ: scrollTranslateZ,
-              opacity,
-              rotateY: rotateYSpring,
-              transformPerspective: "2000px",
-              transformStyle: "preserve-3d",
-              transformOrigin: "center center",
-            }}
-            initial={{ rotateX: 25, translateZ: -100, opacity: 0 }}
-            animate={{ rotateX: 25, translateZ: -100, opacity: 1 }}
-            transition={{
-              delay: 0.5,
-              duration: 0.8,
-              type: "spring",
-              stiffness: 100,
-              damping: 30,
-            }}
-            className="relative mt-20 will-change-transform"
-          >
-            <div className="relative bg-white rounded-2xl shadow-2xl border border-black/5">
-              <Image
-                src="/images/hero-fitness.jpg"
-                alt="AI Fitness Dashboard"
-                width={1200}
-                height={800}
-                className="w-full h-auto rounded-2xl"
-                priority
-              />
+            {/* Animated CTA Buttons */}
+            <div
+              className={`transition-all duration-1000 delay-600 ${
+                isLoaded
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
+                {" "}
+                <Button
+                  size="lg"
+                  className="bg-black hover:bg-green-900 text-white px-10 py-6 text-lg font-medium rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105 font-montserrat"
+                >
+                  Get Started
+                  <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform duration-300" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-2 border-gray-200 text-gray-700 hover:bg-green-50 hover:border-green-200 px-10 py-6 text-lg font-medium rounded-xl transition-all duration-300 group hover:scale-105 backdrop-blur-sm font-montserrat"
+                >
+                  <Play className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                  Watch Demo
+                </Button>
+              </div>
+            </div>
 
-              {/* Stats cards */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-black/5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 flex items-center justify-center">
-                    <svg
-                      className="h-5 w-5 text-black"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                      />
-                    </svg>
+            {/* Hero Image */}
+            <div
+              className={`transition-all duration-1200 delay-800 ${
+                isLoaded
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 translate-y-8 scale-95"
+              }`}
+            >
+              <div className="relative max-w-5xl mx-auto">
+                {/* Enhanced floating background elements */}
+                <div className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-green-200/30 to-gray-100/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute top-1/2 -right-12 w-32 h-32 bg-gradient-to-br from-gray-200/30 to-green-100/20 rounded-full blur-2xl animate-pulse delay-700"></div>
+                <div className="absolute -bottom-8 right-8 w-48 h-48 bg-gradient-to-br from-gray-100/30 to-green-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+                {/* Main Image Container */}
+                <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-6 mx-4 hover:shadow-3xl transition-all duration-500 overflow-visible group">
+                  {/* Image Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-0"></div>
+
+                  {/* Main Image */}
+                  <div className="relative rounded-2xl overflow-hidden">
+                    <Image
+                      src="/images/hero-fitness.jpg"
+                      alt="Fitness Transformation"
+                      width={1200}
+                      height={800}
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 rounded-2xl"
+                      priority
+                    />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Progress Rate
-                    </p>
-                    <p className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                      +64%
-                    </p>
+
+                  {/* Stats Card */}
+                  <div className="absolute -bottom-6 left-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 hidden lg:block hover:scale-105 transition-all duration-300 hover:shadow-2xl z-30">
+                    <div className="text-center font-montserrat relative">
+                      <div className="text-3xl font-bold text-gray-900 mb-1 relative">
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 animate-gradient">
+                          10K+
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-500 mb-2">
+                        Active Members
+                      </div>
+                      <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full"></div>
+                    </div>
+                  </div>
+
+                  {/* AI-Powered Card */}
+                  <div className="absolute top-8 -right-6 bg-black/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/10 p-4 hidden lg:block hover:scale-105 transition-all duration-300 hover:shadow-2xl z-30">
+                    <div className="text-center font-montserrat">
+                      <div className="text-white text-sm font-medium mb-1">
+                        AI-Powered
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        Smart Training
+                      </div>
+                      <div className="mt-2 flex justify-center">
+                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:feature:bg-white/20 transition-colors duration-300">
+                          <Zap className="w-4 h-4 text-green-400" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </div>
+      </main>
+
+      <style jsx>{`
+        @keyframes gradient {
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

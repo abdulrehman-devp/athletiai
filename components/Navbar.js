@@ -1,143 +1,106 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-
-const GetStartedButton = () => (
-  <span className="flex items-center gap-1.5">
-    Get Started
-    <svg
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-    >
-      <path
-        clipRule="evenodd"
-        fillRule="evenodd"
-        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
-      />
-    </svg>
-  </span>
-);
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Workouts", href: "/workouts" },
-    { name: "Nutrition", href: "/nutrition" },
-    { name: "Progress", href: "/progress" },
-  ];
-
-  const buttonStyles =
-    "relative transition-all duration-300 shadow-md py-1.5 px-5 bg-black rounded-full flex items-center justify-center gap-1.5 text-white text-sm font-semibold hover:scale-105 hover:shadow-xl hover:bg-white hover:text-black group ring-offset-2 ring-black focus:ring-2 outline-none";
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/80 backdrop-blur-md shadow-lg"
-          : "bg-white shadow-sm"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16">
-          {/* Logo section with divider */}
-          <div className="flex items-center space-x-6 pr-2 border-r border-gray-200/80 absolute left-6">
-            <Link
-              href="/"
-              className="flex items-center transform transition-transform hover:scale-105"
-            >
-              <Image
-                src="/images/icon.png"
-                alt="Athleti"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Desktop navigation - centered */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <div className="flex items-center space-x-10">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-gray-600 hover:text-black px-3 py-2 text-sm font-medium transition-all duration-200 relative group outline-none"
-                >
-                  {link.name}
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-black transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
-                </Link>
-              ))}
+    <header className="relative z-20 px-6 py-6">
+      <div className="container mx-auto max-w-6xl">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm px-6 py-3">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center space-x-3 group mr-44">
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
+                <Image
+                  src="/images/icon.png"
+                  alt="AthletiAI Logo"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Get Started button */}
-          <div className="hidden md:flex items-center pl-6 absolute right-6">
-            <Link href="/signup" className={buttonStyles}>
-              <GetStartedButton />
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden ml-auto">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-all duration-200"
-            >
-              {isMenuOpen ? (
-                <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-1">
+              {["Features", "Pricing", "About", "Contact"].map(
+                (item, index) => (
+                  <a
+                    key={item}
+                    href="#"
+                    className="px-3 py-1.5 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-300 text-sm font-medium font-montserrat relative group"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    {item}
+                    <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-5"></span>
+                  </a>
+                )
               )}
-            </button>
-          </div>
-        </div>
-      </div>
+            </nav>
 
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden transform transition-all duration-300 ease-out ${
-          isMenuOpen
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-2 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div
-          className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 ${
-            scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"
-          } shadow-lg`}
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-gray-600 hover:text-black block px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 hover:bg-gray-100/80"
+            {/* Desktop CTA */}
+            <div className="hidden md:flex items-center space-x-3">
+              {" "}
+              <Button
+                variant="ghost"
+                className="text-gray-600 hover:text-green-600 hover:bg-green-50 transition-all duration-300 rounded-lg px-3 py-1.5 h-auto font-montserrat"
+              >
+                Sign In
+              </Button>
+              <Button className="bg-black hover:bg-green-900 text-white px-4 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 group h-auto font-montserrat">
+                Get Started
+                <ArrowRight className="ml-2 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden p-1.5 hover:bg-gray-50 rounded-lg transition-all duration-300"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {link.name}
-            </Link>
-          ))}
-          <div className="px-2 pt-2">
-            <Link href="/signup" className={buttonStyles + " w-full"}>
-              <GetStartedButton />
-            </Link>
+              {mobileMenuOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
+            </Button>
           </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-3 pt-3 border-t border-gray-100">
+              <nav className="flex flex-col space-y-1.5">
+                {["Features", "Pricing", "About", "Contact"].map((item) => (
+                  <a
+                    key={item}
+                    href="#"
+                    className="px-3 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-300 text-sm font-medium font-montserrat"
+                  >
+                    {item}
+                  </a>
+                ))}
+                <div className="flex flex-col space-y-1.5 pt-1.5">
+                  <Button
+                    variant="ghost"
+                    className="justify-start px-3 py-2 hover:bg-gray-50 rounded-lg h-auto font-montserrat"
+                  >
+                    Sign In
+                  </Button>
+                  <Button className="bg-black hover:bg-gray-800 text-white px-3 py-2 rounded-lg h-auto font-montserrat">
+                    Get Started
+                  </Button>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
